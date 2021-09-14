@@ -1,5 +1,4 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, NotFoundException, Param, Patch, Post, Query } from '@nestjs/common';
-import { of } from 'rxjs';
 import { CreateServoengineDto } from './dto/create-servoengine.dto';
 import { UpdateServoengineDto } from './dto/update-servoengine.dto';
 import { ServoengineService } from './servoengine.service';
@@ -30,7 +29,8 @@ export class ServoengineController {
         return this.servoengineService.create(createServoengineDto)
     }
     @Patch(':id')
-    update (@Param('id') id:string, updateServoengineDto: UpdateServoengineDto ){
+    update (@Param('id') id:number, @Body() updateServoengineDto: UpdateServoengineDto ){
+        console.log("updateServoengineDto controller", updateServoengineDto)
         return this.servoengineService.update(id, updateServoengineDto)
     }
     @Delete(':id')

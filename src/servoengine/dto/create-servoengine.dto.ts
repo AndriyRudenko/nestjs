@@ -2,7 +2,7 @@ import { IsString } from "class-validator"
 
 export class CreateServoengineDto {
     @IsString()
-    readonly model: string
+    model: string
 
     @IsString()
     readonly brand: string

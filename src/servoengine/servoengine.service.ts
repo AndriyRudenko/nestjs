@@ -1,39 +1,48 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CreateServoengineDto } from './dto/create-servoengine.dto';
+import { UpdateServoengineDto } from './dto/update-servoengine.dto';
 import { Servoengine } from './entities/servoengine.entity';
 
 @Injectable()
 export class ServoengineService {
-    private servoengines: Servoengine[] = [{
-        id: 12,
-        model: 'SuperModel',
-        brand:'My Super Brand',
-        sellers: ['Docker WHO', 'Neo']
-    }]
+    constructor(
+      @InjectRepository(Servoengine)
+      private readonly servoengineRepository: Repository<Servoengine>
+    )
+    {}
 
     findAll() {
-        return this.servoengines;
+        return this.servoengineRepository.find();
       }
 
-      findOne(id: string) {
-        return this.servoengines.find(item => item.id === +id);
+      async findOne(id: string) {
+        const servoengine = await this.servoengineRepository.findOne(id)
+        return servoengine
       }
 
-      create(createServoengineDto: any) {
-        this.servoengines.push(createServoengineDto);
-        return createServoengineDto
+      create(createServoengineDto: CreateServoengineDto) {
+        const servoengine = this.servoengineRepository.create(createServoengineDto);
+        return this.servoengineRepository.save(servoengine)
       }
 
-      update(id: string, updateServoengineDto: any) {
-        const existingServoengine = this.findOne(id);
-        if (existingServoengine) {
-          // update the existing entity
+      async update(id: number, updateServoengineDto: UpdateServoengineDto) {
+        console.log("updateServoengineDto", updateServoengineDto)
+        const servoengine = await this.servoengineRepository.preload({
+          id: id,
+          ...updateServoengineDto,
+        });
+        if (!servoengine) {
+          throw new NotFoundException(`servoeginen #${id} not found`);
         }
+        console.log("debug")
+        console.log("servoengine", servoengine)
+        return  this.servoengineRepository.save(servoengine); //this.servoengineRepository.save(servoengine)
       }
 
-      remove(id: string) {
-        const servoengineIndex = this.servoengines.findIndex(item => item.id === +id);
-        if (servoengineIndex >= 0) {
-          this.servoengines.splice(servoengineIndex, 1);
-        }
+      async remove(id: string) {
+        const servoengine = await this.servoengineRepository.findOne(id);
+        return this.servoengineRepository.remove(servoengine)
     }
 }
