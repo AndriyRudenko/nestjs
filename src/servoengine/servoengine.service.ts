@@ -36,8 +36,6 @@ export class ServoengineService {
         if (!servoengine) {
           throw new NotFoundException(`servoeginen #${id} not found`);
         }
-        console.log("debug")
-        console.log("servoengine", servoengine)
         return  this.servoengineRepository.save(servoengine);
       }
 
