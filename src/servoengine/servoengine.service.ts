@@ -38,7 +38,7 @@ export class ServoengineService {
         }
         console.log("debug")
         console.log("servoengine", servoengine)
-        return  this.servoengineRepository.save(servoengine); //this.servoengineRepository.save(servoengine)
+        return  this.servoengineRepository.save(servoengine);
       }
 
       async remove(id: string) {
